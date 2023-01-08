@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -15,17 +16,33 @@ func newRouter() router {
 }
 
 func (r *router) addRoute(method string, path string, handle HandlerFunc) {
+	if path == "" {
+		panic("thin-web: 路由是空字符串")
+	}
+	if path[0] != '/' {
+		panic("thin-web: 路由必须以 / 开头")
+	}
 	if path != "/" && path[len(path)-1] == '/' {
-		panic("web: 路由不能以 / 结尾")
+		panic("thin-web: 路由不能以 / 结尾")
 	}
 	root, ok := r.trees[method]
 	if !ok {
 		root = &node{path: "/"}
 		r.trees[method] = root
 	}
+	if path == "/" {
+		if root.handle != nil {
+			panic("thin-web: 路由冲突[/]")
+		}
+		root.handle = handle
+		return
+	}
 	// 路由树按照 ‘/’ 切割构造
 	segments := strings.Split(path[1:], "/")
 	for _, segment := range segments {
+		if segment == "" {
+			panic(fmt.Sprintf("thin-web: 非法路由。不允许使用 //a/b, /a//b 之类的路由, [%s]", path))
+		}
 		root = root.childOrCreate(segment)
 	}
 	root.handle = handle
@@ -70,7 +87,7 @@ func (n *node) childOrCreate(path string) *node {
 	// 处理通配符路由
 	if path == "*" {
 		if n.starChild != nil {
-			// todo 已经注册果该参数路由
+			// todo 已经注册过该路由
 		} else {
 			n.starChild = &node{path: path}
 		}
@@ -80,7 +97,7 @@ func (n *node) childOrCreate(path string) *node {
 	// 处理路径参数路由
 	if path[0] == ':' {
 		if n.paramChild != nil {
-			// todo  已经注册果该参数路由
+			// todo  已经注册过该参数路由
 		} else {
 			n.paramChild = &node{path: path}
 		}
