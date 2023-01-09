@@ -4,9 +4,9 @@
 
 ### 前置知识
 
-1、[http库实现与用法](https://marked-cover-17c.notion.site/http-28899b8a73654797a44fa8ad3932afc7)  
-2、[json库的用法](https://marked-cover-17c.notion.site/json-5bbb3237384548588a0cb22d5bd50d47)  
-3、[路由树设计](https://marked-cover-17c.notion.site/e0051bdce06944a79139f4fd71585c3d)  
-4、[context输入输出](https://marked-cover-17c.notion.site/context-9775fe3cf1be43f5913eb2bc5cafcdb4)  
-5、[middleware设计](https://marked-cover-17c.notion.site/middleware-89a3b9c672504fc38b832ecefc14e66b)  
-6、[gin框架源码解读](https://marked-cover-17c.notion.site/gin-03d4caa049ee44a896fadcdab168779b)  
+part1: [http库实现与用法](https://marked-cover-17c.notion.site/http-28899b8a73654797a44fa8ad3932afc7)  
+part2: [json库的用法](https://marked-cover-17c.notion.site/json-5bbb3237384548588a0cb22d5bd50d47)  
+part3: [路由树设计](https://marked-cover-17c.notion.site/e0051bdce06944a79139f4fd71585c3d)  
+part4: [context输入输出](https://marked-cover-17c.notion.site/context-9775fe3cf1be43f5913eb2bc5cafcdb4)  
+part5: [middleware设计](https://marked-cover-17c.notion.site/middleware-89a3b9c672504fc38b832ecefc14e66b)  
+part6: [gin框架源码解读](https://marked-cover-17c.notion.site/gin-03d4caa049ee44a896fadcdab168779b)  
