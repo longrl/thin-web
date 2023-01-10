@@ -12,9 +12,16 @@ type Context struct {
 	Resp http.ResponseWriter
 	Req  *http.Request
 
+	// 缓存的响应部分
+	// 这部分数据会在最后刷新
+	RespStatusCode int
+	RespData       []byte
+
 	PathParams map[string]string
 	// 缓存查询数据
 	cacheQueryValues url.Values
+
+	MatchedRoute string
 }
 
 func (ctx *Context) BindJSON(val any) error {

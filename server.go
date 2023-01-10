@@ -1,6 +1,9 @@
 package web
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 type Server interface {
 	http.Handler
@@ -13,6 +16,7 @@ type HandlerFunc func(ctx *Context)
 
 type HttpServer struct {
 	router
+	ms []Middleware
 }
 
 func NewHttpServer() *HttpServer {
@@ -21,12 +25,35 @@ func NewHttpServer() *HttpServer {
 	}
 }
 
+func (s *HttpServer) Use(ms ...Middleware) {
+	if s.ms == nil {
+		s.ms = ms
+		return
+	}
+	s.ms = append(s.ms, ms...)
+}
+
 func (s *HttpServer) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	ctx := &Context{
 		Req:  request,
 		Resp: writer,
 	}
-	s.serve(ctx)
+	// 路由注册的处理，在 middleware 后执行
+	root := s.serve
+
+	for i := len(s.ms) - 1; i >= 0; i-- {
+		root = s.ms[i](root)
+	}
+
+	var m Middleware = func(next HandlerFunc) HandlerFunc {
+		return func(ctx *Context) {
+			next(ctx)
+			s.flashResp(ctx)
+		}
+	}
+	// 将回写数据放到最后执行
+	root = m(root)
+	root(ctx)
 }
 
 func (s *HttpServer) serve(ctx *Context) {
@@ -37,6 +64,7 @@ func (s *HttpServer) serve(ctx *Context) {
 		return
 	}
 	ctx.PathParams = mi.pathParams
+	ctx.MatchedRoute = mi.n.route
 	mi.n.handle(ctx)
 }
 
@@ -50,4 +78,14 @@ func (s *HttpServer) Post(path string, handler HandlerFunc) {
 
 func (s *HttpServer) Start(addr string) {
 	http.ListenAndServe(addr, s)
+}
+
+func (s *HttpServer) flashResp(ctx *Context) {
+	if ctx.RespStatusCode > 0 {
+		ctx.Resp.WriteHeader(ctx.RespStatusCode)
+	}
+	_, err := ctx.Resp.Write(ctx.RespData)
+	if err != nil {
+		log.Fatalln("回写响应失败", err)
+	}
 }

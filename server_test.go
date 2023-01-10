@@ -13,6 +13,7 @@ type User struct {
 func TestServer(t *testing.T) {
 	request := &User{}
 	server := NewHttpServer()
+	server.Use(Recovery(), AccessLog())
 	server.Post("/hello/name", func(ctx *Context) {
 		ctx.BindJSON(request)
 		ctx.RespJSON(http.StatusNotFound, request)

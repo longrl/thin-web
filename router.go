@@ -46,6 +46,7 @@ func (r *router) addRoute(method string, path string, handle HandlerFunc) {
 		root = root.childOrCreate(segment)
 	}
 	root.handle = handle
+	root.route = path
 }
 
 func (r *router) findRoute(method string, path string) (*matchInfo, bool) {
@@ -81,6 +82,9 @@ type node struct {
 
 	starChild  *node
 	paramChild *node
+
+	// 保存完整路由
+	route string
 }
 
 func (n *node) childOrCreate(path string) *node {
