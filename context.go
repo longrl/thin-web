@@ -22,6 +22,8 @@ type Context struct {
 	cacheQueryValues url.Values
 
 	MatchedRoute string
+
+	UserValues map[string]any
 }
 
 func (ctx *Context) BindJSON(val any) error {
