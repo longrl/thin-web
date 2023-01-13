@@ -10,3 +10,28 @@ part3: [context输入输出](https://marked-cover-17c.notion.site/context-9775fe
 part4: [middleware设计](https://marked-cover-17c.notion.site/middleware-89a3b9c672504fc38b832ecefc14e66b)  
 part5: [拓展功能](https://marked-cover-17c.notion.site/22d8bc7d46b848ccb9975ca1d7f2b591)  
 part6: [gin框架源码解读](https://marked-cover-17c.notion.site/gin-03d4caa049ee44a896fadcdab168779b)  
+
+
+### 使用
+环境：1.18  
+新建目录，初始化工作区；如新建目录然后 go mod init web  
+
+安装
+> go get -u github.com/longrl/thin-web
+
+```go
+package main
+
+import web "github.com/longrl/thin-web"
+
+func main() {
+    server := web.NewHttpServer()
+    server.Use(web.Recovery(), web.AccessLog())
+    server.Get("/hello", func(ctx *web.Context) {
+      ctx.RespJSONOK("hello world")
+    })
+    server.Start(":8080")
+}
+
+
+```
