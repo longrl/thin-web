@@ -84,11 +84,11 @@ type StringValue struct {
 	err error
 }
 
-func (str *StringValue) String() (string, error) {
+func (str StringValue) String() (string, error) {
 	return str.val, str.err
 }
 
-func (str *StringValue) ToInt64() (int64, error) {
+func (str StringValue) ToInt64() (int64, error) {
 	if str.err != nil {
 		return 0, str.err
 	}
